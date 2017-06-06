@@ -3,6 +3,7 @@ package com.example.potran.p07_smsretriever;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -26,7 +27,7 @@ import android.widget.Toast;
 public class FragmentFirst extends Fragment {
 
 
-    Button btnRetrieve;
+    Button btnRetrieve, btnEmail;
     EditText etNumber;
     TextView tvRetrieve;
 
@@ -38,6 +39,7 @@ public class FragmentFirst extends Fragment {
 
         etNumber = (EditText) view.findViewById(R.id.editText1);
         btnRetrieve = (Button) view.findViewById(R.id.buttonRetrieve1);
+        btnEmail = (Button) view.findViewById(R.id.buttonEmail1);
         tvRetrieve = (TextView) view.findViewById(R.id.textViewRetrieve1);
 
         btnRetrieve.setOnClickListener(new View.OnClickListener() {
@@ -96,9 +98,29 @@ public class FragmentFirst extends Fragment {
                         smsBody += type + " " + address + "\n at " + date
                                 + "\n\"" + body + "\"\n\n";
                     } while (cursor.moveToNext());
+                } else{
+                    smsBody = "There is no message from this number";
                 }
                 tvRetrieve.setText(smsBody);
 
+            }
+        });
+        btnEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent email = new Intent(Intent.ACTION_SEND);
+                // Put essentials like email address, subject & body text
+                email.putExtra(Intent.EXTRA_EMAIL,
+                        new String[]{"jason_lim@rp.edu.sg"});
+                email.putExtra(Intent.EXTRA_SUBJECT,
+                        "Test Email from C347");
+                email.putExtra(Intent.EXTRA_TEXT,
+                        tvRetrieve.getText());
+                // This MIME type indicates email
+                email.setType("message/rfc822");
+                // createChooser shows user a list of app that can handle this MIME type, which is, email
+                startActivity(Intent.createChooser(email,
+                        "Choose an Email client :"));
             }
         });
         return view;

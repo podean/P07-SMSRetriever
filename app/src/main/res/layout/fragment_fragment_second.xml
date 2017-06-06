@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:background="@color/light_purple"
+    android:orientation="vertical"
     android:padding="5dp"
     tools:context="com.example.potran.p07_smsretriever.FragmentFirst">
 
@@ -11,7 +11,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Only SMS with this word" />
+        android:text="Only SMS with these words"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/editText2"
@@ -21,11 +23,25 @@
         android:inputType="textPersonName"
         android:text="" />
 
-    <Button
-        android:id="@+id/buttonRetrieve2"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Retrieve SMS" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonRetrieve2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="Retrieve SMS" />
+
+        <Button
+            android:id="@+id/buttonEmail2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="Share" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textViewRetrieve2"

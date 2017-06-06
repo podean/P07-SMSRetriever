@@ -3,6 +3,7 @@ package com.example.potran.p07_smsretriever;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,7 +26,7 @@ import android.widget.Toast;
  */
 public class FragmentSecond extends Fragment {
 
-    Button btnRetrieve;
+    Button btnRetrieve, btnEmail;
     EditText etKeyword;
     TextView tvRetrieve;
 
@@ -37,6 +38,7 @@ public class FragmentSecond extends Fragment {
 
         etKeyword = (EditText) view.findViewById(R.id.editText2);
         btnRetrieve = (Button) view.findViewById(R.id.buttonRetrieve2);
+        btnEmail = (Button) view.findViewById(R.id.buttonEmail2);
         tvRetrieve = (TextView) view.findViewById(R.id.textViewRetrieve2);
 
         btnRetrieve.setOnClickListener(new View.OnClickListener() {
@@ -64,10 +66,18 @@ public class FragmentSecond extends Fragment {
                 String[] reqCols = new String[]{"date", "address", "body", "type"};
 
                 // The filter String
-                String filter="body LIKE ?";
+                String filter="";
                 // The matches for the ?
-                String keyword = etKeyword.getText().toString();
-                String[] filterArgs = {"%"+keyword+"%"};
+                String[] keyword = etKeyword.getText().toString().split(" ");
+                for (int i = 0; i < keyword.length; i++){
+                    filter += "body LIKE ?";
+                    if (i+1 < keyword.length){
+                        filter += " OR ";
+                    }
+                    keyword[i] = "%"+keyword[i]+"%";
+
+                }
+//                String[] filterArgs = keyword;
                 // Fetch SMS Message from Built-in Content Provider
 
 
@@ -76,7 +86,7 @@ public class FragmentSecond extends Fragment {
                 //  query the content provider
                 ContentResolver cr = getActivity().getContentResolver();
                 // Fetch SMS Message from Built-in Content Provider
-                Cursor cursor = cr.query(uri, reqCols, filter, filterArgs, null);
+                Cursor cursor = cr.query(uri, reqCols, filter, keyword, null);
 //                Cursor cursor = cr.query(uri, reqCols, null, null, null);
                 String smsBody = "";
                 if (cursor.moveToFirst()) {
@@ -101,6 +111,24 @@ public class FragmentSecond extends Fragment {
                 }
                 tvRetrieve.setText(smsBody);
 
+            }
+        });
+        btnEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent email = new Intent(Intent.ACTION_SEND);
+                // Put essentials like email address, subject & body text
+                email.putExtra(Intent.EXTRA_EMAIL,
+                        new String[]{"jason_lim@rp.edu.sg"});
+                email.putExtra(Intent.EXTRA_SUBJECT,
+                        "Test Email from C347");
+                email.putExtra(Intent.EXTRA_TEXT,
+                        tvRetrieve.getText());
+                // This MIME type indicates email
+                email.setType("message/rfc822");
+                // createChooser shows user a list of app that can handle this MIME type, which is, email
+                startActivity(Intent.createChooser(email,
+                        "Choose an Email client :"));
             }
         });
         return view;
